@@ -101,7 +101,7 @@ char	*strjoin_end(char *s1, char *s2, char*cpy)
 	}
 	cpy[j] = '\0';
 	free(s1);
-	s1 =  NULL;
+	s1 = NULL;
 	return (cpy);
 }
 // char            *ft_strjoin(char *s1, char *s2)

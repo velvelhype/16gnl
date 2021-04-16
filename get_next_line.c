@@ -31,56 +31,50 @@ int	split(char **save, char **line, int nl_pos)
 
 	(*save)[nl_pos] = '\0';
 	*line = ft_strdup(*save);
-		// int len;
-        // len = ft_strlen(*save + nl_pos + 1);
-        // if (len == 0)
-        // {
-        //         free(*save);
-        //         *save = 0;
-        //         return (1);
-        // }
 	tmp = ft_strdup(*save + nl_pos + 1);
-
 	free(*save);
 	*save = tmp;
-
 	return (1);
 }
 
-int	get_next_line(int	fd, char	**line)
+int	no_more_read(char **save, char **line)
+{
+	int	nl_pos;
+
+	if (*save)
+		nl_pos = nl_find(*save);
+	if (*save && nl_pos >= 0)
+		return (split(save, line, nl_pos));
+	else if (*save)
+	{
+		*line = *save;
+		*save = 0;
+		return (0);
+	}
+	*line = ft_strdup("");
+	return (0);
+}
+
+int	get_next_line(int fd, char **line)
 {
 	static char	*save[32];
 	char		buf[BUFFER_SIZE + 1];
 	int			read_ret;
+	int			nl_pos;
 
-	if ((fd < 0) || (!line) || (BUFFER_SIZE <= 0))
+	if ((fd < 0) || (line == 0) || (BUFFER_SIZE <= 0))
 		return (-1);
-	while (1)
+	read_ret = read(fd, buf, BUFFER_SIZE);
+	while (read_ret > 0)
 	{
+		buf[read_ret] = '\0';
+		save[fd] = ft_strjoin(save[fd], buf);
+		nl_pos = nl_find(save[fd]);
+		if (nl_pos >= 0)
+			return (split(&save[fd], line, nl_pos));
 		read_ret = read(fd, buf, BUFFER_SIZE);
-
-		if (read_ret < 0)
-			return (-1);
-		if(read_ret != 0)
-		{
-			buf[read_ret] = '\0';
-			save[fd] = ft_strjoin(save[fd], buf);
-		}
-		if (nl_find(save[fd]) != -1)
-		{
-			return (split(&save[fd], line, nl_find(save[fd])));
-		}
-		if (read_ret < BUFFER_SIZE)
-		{
-			if (*save[fd])
-			{
-				*line = save[fd];
-			}
-			else
-			{
-				*line = ft_strdup("");
-			}
-			return (0);
-		}
 	}
+	if (read_ret < 0)
+		return (-1);
+	return (no_more_read(&save[fd], line));
 }
