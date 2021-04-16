@@ -62,25 +62,6 @@ char	*ft_strdup(char *s)
 	return (cpy);
 }
 
-// char            *ft_strdup(char *s1)
-// {
-//         char    *result;
-//         int             i;
-
-//         i = ft_strlen(s1);
-//         result = (char *)malloc(sizeof(char) * (i + 1));
-//         if (!result)
-//                 return (0);
-//         i = 0;
-//         while (s1[i])
-//         {
-//                 result[i] = s1[i];
-//                 i++;
-//         }
-//         result[i] = '\0';
-//         return (result);
-// }
-
 char	*strjoin_end(char *s1, char *s2, char*cpy)
 {
 	size_t	i;
@@ -104,25 +85,6 @@ char	*strjoin_end(char *s1, char *s2, char*cpy)
 	s1 = NULL;
 	return (cpy);
 }
-// char            *ft_strjoin(char *s1, char *s2)
-// {
-//         char    *newstr;
-//         int             s1_len;
-//         int             s2_len;
-
-//         if (!(s1) && !(s2))
-//                 return (NULL);
-//         else if (!(s1) || !(s2))
-//                 return (!(s1) ? ft_strdup(s2) : ft_strdup(s1));
-//         s1_len = ft_strlen(s1);
-//         s2_len = ft_strlen(s2);
-//         if (!(newstr = (char *)malloc(sizeof(char) * (s1_len + s2_len + 1))))
-//                 return (NULL);
-//         ft_strlcpy(newstr, s1, s1_len + 1);
-//         free(s1);
-//         ft_strlcat(newstr + (s1_len), s2, s2_len + 1);
-//         return (newstr);
-// }
 
 char	*ft_strjoin(char *s1, char *s2)
 {

@@ -1,5 +1,4 @@
 #include "get_next_line.h"
-#include <stdio.h>
 
 size_t	ft_strlen(const char *str)
 {
@@ -57,12 +56,12 @@ int	no_more_read(char **save, char **line)
 
 int	get_next_line(int fd, char **line)
 {
-	static char	*save[32];
+	static char	*save[256];
 	char		buf[BUFFER_SIZE + 1];
 	int			read_ret;
 	int			nl_pos;
 
-	if ((fd < 0) || (line == 0) || (BUFFER_SIZE <= 0))
+	if ((fd < 0)||(fd > 256)||(line == 0) || (BUFFER_SIZE <= 0))
 		return (-1);
 	read_ret = read(fd, buf, BUFFER_SIZE);
 	while (read_ret > 0)
