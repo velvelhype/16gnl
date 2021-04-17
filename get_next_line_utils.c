@@ -1,45 +1,13 @@
 #include "get_next_line.h"
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+size_t	ft_strlen(const char *str)
 {
 	size_t	i;
 
 	i = 0;
-	if (dstsize == 0)
-	{
-		while (src[i])
-			i++;
-		return (i);
-	}
-	while (i < dstsize - 1 && src[i] != '\0')
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	if (i < dstsize)
-		dst[i] = '\0';
-	while (src[i])
+	while (str[i])
 		i++;
 	return (i);
-}
-
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
-{
-	size_t	elen;
-	size_t	ori;
-
-	elen = 0;
-	while (dst[elen] && elen < dstsize)
-		elen++;
-	ori = elen;
-	while (src[elen - ori] && elen + 1 < dstsize)
-	{
-		dst[elen] = src[elen - ori];
-		elen++;
-	}
-	if (ori < dstsize)
-		dst[elen] = '\0';
-	return (ori + ft_strlen(src));
 }
 
 char	*ft_strdup(char *s)
@@ -107,4 +75,13 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!cpy)
 		return (NULL);
 	return (strjoin_end(s1, s2, cpy));
+}
+
+void	buf_cleaner(char *buf)
+{
+	if (buf)
+	{
+		free(buf);
+		buf = NULL;
+	}
 }

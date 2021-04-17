@@ -1,15 +1,5 @@
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
 int	nl_find(char *save)
 {
 	char	*ori;
@@ -24,7 +14,7 @@ int	nl_find(char *save)
 	return (-1);
 }
 
-int	split(char **save, char **line, int nl_pos)
+int	nl_split(char **save, char **line, int nl_pos)
 {
 	char	*tmp;
 
@@ -43,7 +33,7 @@ int	no_more_read(char **save, char **line)
 	if (*save)
 		nl_pos = nl_find(*save);
 	if (*save && nl_pos >= 0)
-		return (split(save, line, nl_pos));
+		return (nl_split(save, line, nl_pos));
 	else if (*save)
 	{
 		*line = *save;
@@ -54,25 +44,37 @@ int	no_more_read(char **save, char **line)
 	return (0);
 }
 
+char	*nullterm_and_join(char *buf, char *save, size_t read_ret)
+{
+	buf[read_ret] = '\0';
+	save = ft_strjoin(save, buf);
+	return (save);
+}
+
 int	get_next_line(int fd, char **line)
 {
 	static char	*save[256];
-	char		buf[BUFFER_SIZE + 1];
-	int			read_ret;
-	int			nl_pos;
+	char		*buf;
+	ssize_t		read_ret;
 
-	if ((fd < 0)||(fd > 256)||(line == 0) || (BUFFER_SIZE <= 0))
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if ((fd < 0) || (fd > 256) || !line || (BUFFER_SIZE <= 0) || !buf)
+	{
+		buf_cleaner(buf);
 		return (-1);
+	}
 	read_ret = read(fd, buf, BUFFER_SIZE);
 	while (read_ret > 0)
 	{
-		buf[read_ret] = '\0';
-		save[fd] = ft_strjoin(save[fd], buf);
-		nl_pos = nl_find(save[fd]);
-		if (nl_pos >= 0)
-			return (split(&save[fd], line, nl_pos));
+		save[fd] = nullterm_and_join(buf, save[fd], read_ret);
+		if (nl_find(save[fd]) >= 0)
+		{
+			buf_cleaner(buf);
+			return (nl_split(&save[fd], line, nl_find(save[fd])));
+		}
 		read_ret = read(fd, buf, BUFFER_SIZE);
 	}
+	buf_cleaner(buf);
 	if (read_ret < 0)
 		return (-1);
 	return (no_more_read(&save[fd], line));
